@@ -22,7 +22,7 @@ import { calculateBookingEndTime, getUnavailableBookings } from "./bookingManage
 
 export async function getAvailableVehicles(req, res) {
   const { capacityRequired, fromPincode, toPincode, startTime } = req.query;
-  const { endTime } = calculateBookingEndTime(
+  const { endTime, estimatedRideDurationHours } = calculateBookingEndTime(
     fromPincode,
     toPincode,
     startTime
@@ -35,7 +35,7 @@ export async function getAvailableVehicles(req, res) {
       capacityKg: { $gte: capacityRequired },
       _id: { $nin: unavailableVehicleIds },
     });
-    return res.status(200).json({ vehicles: suitableVehicles });
+    return res.status(200).json({ vehicles: suitableVehicles, estimatedRideDurationHours });
   } catch (e) {
     return res.status(500).json({ error: e?.message || "Internal server error" });
   }
